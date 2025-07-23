@@ -1,0 +1,97 @@
+# =============================================================================
+# ZSH & OH-MY-ZSH CONFIGURATION
+# =============================================================================
+
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_DISABLE_COMPFIX='true'
+
+# Plugins
+plugins=(copyfile sudo aws kubectl z git)
+
+# Update settings
+zstyle ':omz:update' mode reminder
+zstyle ':omz:update' frequency 1
+
+# =============================================================================
+# SHELL OPTIONS & HISTORY
+# =============================================================================
+
+# History configuration
+HISTFILE=~/.zsh_history
+HISTSIZE=50000
+SAVEHIST=50000
+setopt share_history
+setopt hist_ignore_dups
+setopt hist_ignore_space
+setopt hist_verify
+setopt inc_append_history
+
+# Shell behavior
+setopt auto_cd
+setopt no_beep
+
+# =============================================================================
+# COMPLETIONS & PROMPT
+# =============================================================================
+
+autoload -U +X bashcompinit && bashcompinit
+autoload -U +X compinit && compinit
+
+PROMPT_EOL_MARK=' '
+
+# =============================================================================
+# ENVIRONMENT VARIABLES
+# =============================================================================
+
+export STARSHIP_CONFIG=~/.config/starship/starship.toml
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+export EDITOR="nvim"
+export GIT_EDITOR="nvim"
+
+# PATH configuration
+export PATH="/opt/homebrew/bin:$PATH"
+export PATH="$PATH:$HOME/.local/bin"
+
+# =============================================================================
+# SOURCE CONFIGURATIONS
+# =============================================================================
+
+# Load oh-my-zsh
+source $ZSH/oh-my-zsh.sh
+
+# External tools
+eval "$(starship init zsh)"
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+eval "$(mise activate zsh)"
+
+
+
+# =============================================================================
+# CUSTOM ALIASES & FUNCTIONS
+# =============================================================================
+# Personal aliases
+alias x="sudo -s"
+alias zshconfig="nvim ~/.zshrc"
+alias zshreload="source ~/.zshrc"
+alias nvimconfig="nvim ~/.config/nvim/"
+
+# File operations
+alias ll="ls -la"
+alias la="ls -A"
+alias l="ls -CF"
+alias ..="cd .."
+alias ...="cd ../.."
+
+# Utilities
+alias grep="grep --color=auto"
+
+# Teleport
+alias tlog='tsh login --auth okta --proxy=sysdig.teleport.sh'
+
+# Kubernetes
+alias kubeclr="kubectl config unset current-context"
+
+# Git
+alias main="git checkout main && git pull origin main"
