@@ -52,6 +52,8 @@ export GIT_EDITOR="nvim"
 export PATH="/opt/homebrew/bin:$PATH"
 export PATH="$PATH:$HOME/.local/bin"
 
+export GPG_TTY=$(tty)
+
 # =============================================================================
 # SOURCE CONFIGURATIONS
 # =============================================================================
