@@ -1,0 +1,141 @@
+#!/bin/bash
+
+set -e  # Exit on error
+
+echo "🚀 Starting system setup..."
+
+# Install Homebrew if not present
+if ! command -v brew &> /dev/null; then
+    echo "📦 Installing Homebrew..."
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    
+    # Add Homebrew to PATH for Apple Silicon
+    if [[ $(uname -m) == 'arm64' ]]; then
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+        eval "$(/opt/homebrew/bin/brew shellenv)"
+    fi
+fi
+
+# Install essential Homebrew packages
+echo "📦 Installing Homebrew packages..."
+brew install \
+    act \
+    bash \
+    bats-core/bats-core/bats-assert \
+    bats-core/bats-core/bats-detik \
+    bats-core/bats-core/bats-file \
+    bats-core/bats-core/bats-support \
+    chezmoi \
+    conftest \
+    dialog \
+    docker \
+    ffmpeg \
+    gawk \
+    gnu-sed \
+    gnu-tar \
+    gnupg \
+    guile \
+    htop \
+    ipcalc \
+    iperf \
+    keyring \
+    make \
+    markdownlint-cli \
+    openshift-cli \
+    openssl@1.1 \
+    pinentry-mac \
+    postgresql@14 \
+    qemu \
+    qpdf \
+    rtmpdump \
+    sshuttle \
+    telnet \
+    tree \
+    trufflehog \
+    watch \
+    wget \
+    wimlib \
+    ykman \
+    zsh-autosuggestions \
+    age
+
+# Install mise
+if ! command -v mise &> /dev/null; then
+    echo "🔧 Installing mise..."
+    curl https://mise.run | sh
+    
+    # Add mise to shell
+    if ! grep -q 'mise activate' ~/.zshrc; then
+        echo 'eval "$(~/.local/bin/mise activate zsh)"' >> ~/.zshrc
+    fi
+    eval "$(~/.local/bin/mise activate zsh)" 2>/dev/null || true
+fi
+
+# Install Oh My Zsh if not present
+if [ ! -d "$HOME/.oh-my-zsh" ]; then
+    echo "💻 Installing Oh My Zsh..."
+    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+fi
+
+# Install mise tools
+echo "🔧 Installing mise tools..."
+mise install || echo "⚠️  Some mise tools may have failed to install"
+
+# Import GPG key if it exists
+if [ -f "$HOME/gpg-private-key.asc" ]; then
+    echo "🔐 Importing GPG key..."
+    gpg --import "$HOME/gpg-private-key.asc"
+    
+    # Set trust level
+    echo "Setting ultimate trust for GPG key..."
+    echo -e "5\ny\n" | gpg --command-fd 0 --edit-key 5D4FE959DA79B3649B53D852C668C68A73B6A7B9 trust quit
+    
+    # Optional: remove the key file after import for security
+    echo "⚠️  Remember to delete ~/gpg-private-key.asc manually after verifying import"
+    
+    echo "✅ GPG key imported successfully"
+else
+    echo "⚠️  GPG key not found at ~/gpg-private-key.asc - skipping import"
+    echo "   You can import it later with: gpg --import ~/gpg-private-key.asc"
+fi
+
+# Setup SSH keys permissions
+if [ -d "$HOME/.ssh" ]; then
+    echo "🔑 Setting SSH key permissions..."
+    chmod 700 ~/.ssh
+    find ~/.ssh -type f -name "id_*" ! -name "*.pub" -exec chmod 600 {} \; 2>/dev/null || true
+    find ~/.ssh -type f -name "*.pub" -exec chmod 644 {} \; 2>/dev/null || true
+    [ -f ~/.ssh/config ] && chmod 600 ~/.ssh/config
+fi
+
+# Start ssh-agent and add keys
+if command -v ssh-agent &> /dev/null; then
+    echo "🔑 Adding SSH keys to ssh-agent..."
+    eval "$(ssh-agent -s)"
+    
+    # Add all private keys found
+    find ~/.ssh -type f -name "id_*" ! -name "*.pub" -exec ssh-add {} \; 2>/dev/null || true
+fi
+
+# Configure GPG agent for better UX
+if [ ! -f "$HOME/.gnupg/gpg-agent.conf" ]; then
+    echo "⚙️  Configuring GPG agent..."
+    cat > "$HOME/.gnupg/gpg-agent.conf" << 'EOF'
+default-cache-ttl 34560000
+max-cache-ttl 34560000
+pinentry-program /opt/homebrew/bin/pinentry-mac
+EOF
+    gpgconf --kill gpg-agent
+fi
+
+echo ""
+echo "✅ Setup complete!"
+echo ""
+echo "📝 Next steps:"
+echo "1. Restart your terminal (or run: source ~/.zshrc)"
+echo "2. Verify GPG: gpg --list-keys"
+echo "3. Verify SSH: ssh -T git@github.com"
+echo "4. Check mise: mise doctor"
+echo "5. Delete GPG key file: rm ~/gpg-private-key.asc (after verifying import)"
+echo ""
+echo "🎉 Happy coding!"
