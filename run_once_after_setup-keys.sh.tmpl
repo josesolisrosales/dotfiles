@@ -1,0 +1,56 @@
+#!/bin/bash
+
+echo "🔐 Setting up GPG and SSH keys..."
+
+# Import GPG key if it exists
+if [ -f "$HOME/gpg-private-key.asc" ]; then
+    echo "🔐 Importing GPG key..."
+    gpg --import "$HOME/gpg-private-key.asc" 2>/dev/null || echo "⚠️  GPG key may already be imported"
+    
+    # Set trust level
+    echo "Setting ultimate trust for GPG key..."
+    echo -e "5\ny\n" | gpg --command-fd 0 --edit-key 5D4FE959DA79B3649B53D852C668C68A73B6A7B9 trust quit 2>/dev/null || true
+    
+    echo "⚠️  Remember to delete ~/gpg-private-key.asc manually after verifying import"
+    echo "✅ GPG key imported successfully"
+else
+    echo "⚠️  GPG key not found at ~/gpg-private-key.asc - skipping import"
+fi
+
+# Setup SSH keys permissions
+if [ -d "$HOME/.ssh" ]; then
+    echo "🔑 Setting SSH key permissions..."
+    chmod 700 ~/.ssh
+    find ~/.ssh -type f -name "id_*" ! -name "*.pub" -exec chmod 600 {} \; 2>/dev/null || true
+    find ~/.ssh -type f -name "*.pub" -exec chmod 644 {} \; 2>/dev/null || true
+    [ -f ~/.ssh/config ] && chmod 600 ~/.ssh/config
+fi
+
+# Start ssh-agent and add keys
+if command -v ssh-agent &> /dev/null; then
+    echo "🔑 Adding SSH keys to ssh-agent..."
+    eval "$(ssh-agent -s)" 2>/dev/null || true
+    
+    # Add all private keys found
+    find ~/.ssh -type f -name "id_*" ! -name "*.pub" -exec ssh-add {} \; 2>/dev/null || true
+fi
+
+# Configure GPG agent for better UX
+if [ ! -f "$HOME/.gnupg/gpg-agent.conf" ]; then
+    echo "⚙️  Configuring GPG agent..."
+    mkdir -p "$HOME/.gnupg"
+    cat > "$HOME/.gnupg/gpg-agent.conf" << 'EOF'
+default-cache-ttl 34560000
+max-cache-ttl 34560000
+pinentry-program /opt/homebrew/bin/pinentry-mac
+EOF
+    gpgconf --kill gpg-agent 2>/dev/null || true
+fi
+
+echo ""
+echo "✅ GPG and SSH setup complete!"
+echo ""
+echo "📝 Verify:"
+echo "  gpg --list-keys"
+echo "  ssh -T git@github.com"
+echo "  ssh-add -l"
