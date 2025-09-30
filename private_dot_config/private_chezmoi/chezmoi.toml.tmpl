@@ -1,4 +1,9 @@
 {{- /* This is a chezmoi config file template */ -}}
 [git]
-    autoCommit = true
-    autoPush = true
+    autoCommit = false
+    autoPush = false
+
+[".config/nvim"]
+    type = "git-repo"
+    url = "https://github.com/josesolisrosales/josesolisrosales.nvim.git"
+    refreshPeriod = "4h"

@@ -97,3 +97,6 @@ alias kubeclr="kubectl config unset current-context"
 
 # Git
 alias main="git checkout main && git pull origin main"
+
+#Chezmoi
+alias cz-sync='chezmoi git -- add . && chezmoi git -- commit -m "Update: $(date +%Y-%m-%d)" && chezmoi git -- pull --rebase && chezmoi git -- push'
