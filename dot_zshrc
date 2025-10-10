@@ -68,6 +68,18 @@ source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 eval "$(mise activate zsh)"
 
+# Auto-sync config repos (once per day, in background)
+LAST_SYNC_FILE="$HOME/.cache/last-config-sync"
+mkdir -p "$HOME/.cache"
+
+if [ ! -f "$LAST_SYNC_FILE" ] || [ $(( $(date +%s) - $(stat -f %m "$LAST_SYNC_FILE" 2>/dev/null || echo 0) )) -gt 86400 ]; then
+    (
+        ~/.local/bin/sync-configs
+        touch "$LAST_SYNC_FILE"
+    ) &>/dev/null &
+    disown
+fi
+
 
 
 # =============================================================================
@@ -99,4 +111,9 @@ alias kubeclr="kubectl config unset current-context"
 alias main="git checkout main && git pull origin main"
 
 #Chezmoi
-alias cz-sync='chezmoi git -- add . && chezmoi git -- commit -m "Update: $(date +%Y-%m-%d)" && chezmoi git -- pull --rebase && chezmoi git -- push'
+alias cz="chezmoi"
+
+# Config sync aliases
+alias sync-nvim='cd ~/.config/nvim && git add . && git commit -m "Update nvim config" && git push'
+alias sync-iterm='cd ~/.iterm-settings && git add . && git commit -m "Update iTerm settings" && git push'
+alias sync-configs='~/.local/bin/sync-configs'
