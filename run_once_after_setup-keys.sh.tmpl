@@ -62,3 +62,20 @@ echo "🔄 Switching dotfiles remote to SSH..."
 chezmoi git remote set-url origin git@github.com:josesolisrosales/dotfiles.git
 
 echo -e "✅ Remote switched to SSH${NC}"
+
+if [ ! -d "$HOME/.config/nvim/.git" ]; then
+    echo "📦 Cloning nvim config..."
+    git clone https://github.com/josesolisrosales/josesolisrosales.nvim.git ~/.config/nvim
+    echo -e "✅ Neovim config cloned${NC}"
+else
+    echo -e "✅ Neovim config already exists${NC}"
+fi
+
+# Clone iTerm2 profiles if not exists
+if [ ! -d "$HOME/.iterm2-profiles/.git" ]; then
+    echo "📦 Cloning iTerm2 profiles..."
+    git clone git@github.com:josesolisrosales/iterm2-profiles.git ~/.iterm2-profiles
+    echo -e "✅ iTerm2 profiles cloned${NC}"
+else
+    echo -e "✅ iTerm2 profiles already exists${NC}"
+fi
