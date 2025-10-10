@@ -73,8 +73,7 @@ brew install --cask iterm2 || echo "⚠️  iTerm2 may already be installed or f
 
 # Install Nerd Fonts
 echo "🔤 Installing RobotoMono Nerd Font..."
-brew tap homebrew/cask-fonts
-brew install --cask font-roboto-mono-nerd-font || echo "⚠️  Roboto Mono Font might already be installed or failed to install"
+brew install font-roboto-mono-nerd-font || echo "⚠️  Roboto Mono Font might already be installed or failed to install"
 
 # Install mise
 if ! command -v mise &> /dev/null; then
