@@ -54,3 +54,11 @@ echo "📝 Verify:"
 echo "  gpg --list-keys"
 echo "  ssh -T git@github.com"
 echo "  ssh-add -l"
+
+
+# Switch Self to SSH for future operations
+echo ""
+echo "🔄 Switching dotfiles remote to SSH..."
+chezmoi git remote set-url origin git@github.com:josesolisrosales/dotfiles.git
+
+echo -e "✅ Remote switched to SSH${NC}"
