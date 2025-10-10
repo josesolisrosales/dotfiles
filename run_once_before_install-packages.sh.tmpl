@@ -30,6 +30,7 @@ PACKAGES=(
     docker
     ffmpeg
     gawk
+    starship
     gnu-sed
     gnu-tar
     gnupg
@@ -41,7 +42,7 @@ PACKAGES=(
     make
     markdownlint-cli
     openshift-cli
-    openssl@1.1
+    openssl
     pinentry-mac
     qemu
     qpdf
@@ -49,7 +50,6 @@ PACKAGES=(
     sshuttle
     telnet
     tree
-    trufflehog
     watch
     wget
     wimlib
@@ -67,9 +67,9 @@ for package in "${PACKAGES[@]}"; do
     fi
 done
 
-# Install Warp Terminal
-echo "💻 Installing Warp Terminal..."
-brew install --cask warp || echo "⚠️  Warp may already be installed or failed to install"
+# Install iTerm2
+echo "💻 Installing iTerm2..."
+brew install --cask iterm2 || echo "⚠️  iTerm2 may already be installed or failed to install"
 
 # Install mise
 if ! command -v mise &> /dev/null; then
