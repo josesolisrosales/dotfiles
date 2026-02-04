@@ -63,22 +63,23 @@ source $ZSH/oh-my-zsh.sh
 
 # External tools
 eval "$(starship init zsh)"
-source <(fzf --zsh)
 source $(brew --prefix)/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 eval "$(mise activate zsh)"
+source <(fzf --zsh)
 
-# Auto-sync config repos (once per day, in background)
-LAST_SYNC_FILE="$HOME/.cache/last-config-sync"
-mkdir -p "$HOME/.cache"
 
-if [ ! -f "$LAST_SYNC_FILE" ] || [ $(( $(date +%s) - $(stat -f %m "$LAST_SYNC_FILE" 2>/dev/null || echo 0) )) -gt 86400 ]; then
-    (
-        ~/.local/bin/sync-configs
-        touch "$LAST_SYNC_FILE"
-    ) &>/dev/null &
-    disown
-fi
+# # Auto-sync config repos (once per day, in background)
+# LAST_SYNC_FILE="$HOME/.cache/last-config-sync"
+# mkdir -p "$HOME/.cache"
+#
+# if [ ! -f "$LAST_SYNC_FILE" ] || [ $(( $(date +%s) - $(stat -f %m "$LAST_SYNC_FILE" 2>/dev/null || echo 0) )) -gt 86400 ]; then
+#     (
+#         ~/.local/bin/sync-configs
+#         touch "$LAST_SYNC_FILE"
+#     ) &>/dev/null &
+#     disown
+# fi
 
 
 
