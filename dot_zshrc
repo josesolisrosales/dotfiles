@@ -91,6 +91,7 @@ alias x="sudo -s"
 alias zshconfig="nvim ~/.zshrc"
 alias zshreload="source ~/.zshrc"
 alias nvimconfig="nvim ~/.config/nvim/"
+alias k="kubectl"
 
 # File operations
 alias ll="ls -la"
@@ -118,3 +119,6 @@ alias cz="chezmoi"
 alias sync-nvim='cd ~/.config/nvim && git add . && git commit -m "Update nvim config" && git push'
 alias sync-iterm='cd ~/.iterm-settings && git add . && git commit -m "Update iTerm settings" && git push'
 alias sync-configs='~/.local/bin/sync-configs'
+
+
+
