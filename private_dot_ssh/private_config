@@ -11,18 +11,18 @@ Host bm-mb-01
 
 Host bm-db-01
     HostName 10.245.2.2
-    User ubuntu
+    User root
     IdentityFile ~/.ssh/blue
     ProxyJump bm-mb-01
 
 Host bm-db-02
     HostName 10.245.2.3
-    User ubuntu
+    User root
     IdentityFile ~/.ssh/blue
     ProxyJump bm-mb-01
 
 Host bm-db-03
     HostName 10.245.2.4
-    User ubuntu
+    User root
     IdentityFile ~/.ssh/blue
     ProxyJump bm-mb-01
