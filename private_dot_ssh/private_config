@@ -6,7 +6,7 @@ Host github.com
 
 Host bm-mb-01
     HostName 10.245.1.2
-    User ubuntu
+    User root
     IdentityFile ~/.ssh/blue
 
 Host bm-db-01
