@@ -1,5 +1,6 @@
 [tools]
 aws = "latest"
+aws-nuke = "latest"
 bat = "latest"
 flux2 = "latest"
 fzf = "latest"
