@@ -1,4 +1,5 @@
 [tools]
+bats = "latest"
 aws = "latest"
 aws-nuke = "latest"
 bat = "latest"
